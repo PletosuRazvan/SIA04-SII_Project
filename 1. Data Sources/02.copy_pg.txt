@@ -1,0 +1,2 @@
+\copy olympics.stg_athletes FROM 'C:\fdbo_data\pg_data\athletes.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8')
+\copy olympics.stg_results FROM 'C:\fdbo_data\pg_data\results.csv' WITH (FORMAT csv, HEADER true, ENCODING 'UTF8')

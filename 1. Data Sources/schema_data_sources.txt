@@ -1,0 +1,66 @@
+Surse de date - Sistem Integrat de Analiză a Datelor Olimpice
+==============================================================
+
+DS1 - CSV-uri → PostgreSQL (schema: olympics)
+----------------------------------------------
+- athletes   (athlete_id PK, name, sex, height, weight)     ~135.000 rânduri
+- results    (result_id PK, athlete_id FK, game_id, event_id, noc, team, age, medal)  ~271.000 rânduri
+
+Chei interne PG:
+  results.athlete_id → athletes.athlete_id
+
+---
+
+DS2 - Oracle (user: OLY_REF)
+------------------------------
+- games      (game_id PK, games_name, year, season, city)       51 rânduri
+- sports     (sport_id PK, sport_name)                           66 rânduri
+- events     (event_id PK, sport_id FK, event_name)             765 rânduri
+- countries  (noc PK, region, notes)                            230 rânduri
+
+Chei interne Oracle:
+  events.sport_id → sports.sport_id
+
+---
+
+DS3 - JSON → MongoDB NoSQL (db: olympics_nosql, via RESTHeart)
+---------------------------------------------------------------
+- athlete_medals_docs   (athlete_id, name, sex, total_medals, gold, silver, bronze, ...)
+- game_summary_docs     (game_id, games_name, year, season, city, medals:{...}, ...)
+
+---
+
+DS4 - CSV → Oracle External Table (citire directă din fișier)
+--------------------------------------------------------------
+- athlete_events_enriched.csv  (~271.000 rânduri × 19 coloane)
+  Conține date denormalizate (atlet, echipă, țară, ediție, sport, eveniment, medalie)
+  Citit prin ORACLE_LOADER External Table → view CSV_ATHLETE_EVENTS_V
+
+---
+
+Relații Cross-System (enforced logic în FDBO):
+
+  DS1 (PostgreSQL)              DS2 (Oracle OLY_REF)
+  results.game_id       →       games.game_id
+  results.event_id      →       events.event_id
+  results.noc           →       countries.noc
+
+  DS3 (MongoDB)                 DS1 (PostgreSQL)
+  athlete_medals.athlete_id →   athletes.athlete_id
+
+  DS3 (MongoDB)                 DS2 (Oracle OLY_REF)
+  game_summary.game_id     →   games.game_id
+
+
+Schema vizuală:
+
+  DS2 (Oracle OLY_REF)
+       games, sports, events, countries
+            │
+            ▼
+  DS1 (PostgreSQL)
+       athletes ← results
+            │
+            ▼
+  DS3 (MongoDB NoSQL)
+       athlete_medals_docs, game_summary_docs

@@ -1,0 +1,68 @@
+-- ============================================================
+-- 20. LISTA ENDPOINT-URI REST
+-- Base URL: http://localhost:8080/ords/fdbo
+-- ============================================================
+
+-- ==================== REST MODULE ENDPOINTS ====================
+-- Base path: /olympics/
+
+-- FACT TABLE
+http://localhost:8080/ords/fdbo/olympics/fact-results
+
+-- ROLLUP (3)
+http://localhost:8080/ords/fdbo/olympics/rollup/decade-year-game
+http://localhost:8080/ords/fdbo/olympics/rollup/sport-event
+http://localhost:8080/ords/fdbo/olympics/rollup/country-season
+
+-- CUBE (3)
+http://localhost:8080/ords/fdbo/olympics/cube/country-season
+http://localhost:8080/ords/fdbo/olympics/cube/sport-medal-gender
+http://localhost:8080/ords/fdbo/olympics/cube/era-agegroup
+
+-- GROUPING SETS (3)
+http://localhost:8080/ords/fdbo/olympics/gsets/year-country-sport
+http://localhost:8080/ords/fdbo/olympics/gsets/season-country-medal
+http://localhost:8080/ords/fdbo/olympics/gsets/decade-gender-age
+
+-- WINDOW FUNCTIONS (8)
+http://localhost:8080/ords/fdbo/olympics/wf/country-running-medals
+http://localhost:8080/ords/fdbo/olympics/wf/country-rank-per-game
+http://localhost:8080/ords/fdbo/olympics/wf/sport-avg-age-trend
+http://localhost:8080/ords/fdbo/olympics/wf/country-medal-diff-avg
+http://localhost:8080/ords/fdbo/olympics/wf/country-first-last-medal
+http://localhost:8080/ords/fdbo/olympics/wf/sport-medal-share
+http://localhost:8080/ords/fdbo/olympics/wf/athlete-sport-rank
+http://localhost:8080/ords/fdbo/olympics/wf/country-lag-lead
+
+
+-- ==================== AUTO-REST ENDPOINTS ====================
+-- (acces direct la view-uri, generate de ORDS.ENABLE_OBJECT)
+
+http://localhost:8080/ords/fdbo/olap_rollup_decade_year_game_v/
+http://localhost:8080/ords/fdbo/olap_rollup_sport_event_v/
+http://localhost:8080/ords/fdbo/olap_rollup_country_season_v/
+http://localhost:8080/ords/fdbo/olap_cube_country_season_v/
+http://localhost:8080/ords/fdbo/olap_cube_sport_medal_gender_v/
+http://localhost:8080/ords/fdbo/olap_cube_era_agegroup_v/
+http://localhost:8080/ords/fdbo/olap_gsets_year_country_sport_v/
+http://localhost:8080/ords/fdbo/olap_gsets_season_country_medal_v/
+http://localhost:8080/ords/fdbo/olap_gsets_decade_gender_age_v/
+http://localhost:8080/ords/fdbo/wv_country_running_medals_v/
+http://localhost:8080/ords/fdbo/wv_country_rank_per_game_v/
+http://localhost:8080/ords/fdbo/wv_sport_avg_age_trend_v/
+http://localhost:8080/ords/fdbo/wv_country_medal_diff_avg_v/
+http://localhost:8080/ords/fdbo/wv_country_first_last_medal_v/
+http://localhost:8080/ords/fdbo/wv_sport_medal_share_v/
+http://localhost:8080/ords/fdbo/wv_athlete_sport_rank_v/
+http://localhost:8080/ords/fdbo/wv_country_lag_lead_v/
+
+
+-- ==================== REST-ENABLED SQL ====================
+-- Exemplu curl cu SQL direct
+
+curl -i -X POST --user FDBO:fdbo --data "SELECT * FROM FACT_RESULTS_V WHERE ROWNUM <= 10" -H "Content-Type: application/sql" http://localhost:8080/ords/fdbo/_/sql
+
+curl -i -X POST --user FDBO:fdbo --data "SELECT * FROM OLAP_CUBE_COUNTRY_SEASON_V WHERE country_name = 'Romania'" -H "Content-Type: application/sql" http://localhost:8080/ords/fdbo/_/sql
+
+-- Verificare module
+SELECT name, uri_prefix FROM user_ords_modules ORDER BY name;
