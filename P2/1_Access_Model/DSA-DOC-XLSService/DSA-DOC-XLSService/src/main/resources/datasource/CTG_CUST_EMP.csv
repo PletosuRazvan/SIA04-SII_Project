@@ -1,0 +1,4 @@
+Category_code,Category_name,Lower_L,Upper_L
+E1,Small,1,99
+E2,Large,100,999
+E3,Big,1000,99999
